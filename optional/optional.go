@@ -1,4 +1,4 @@
-package go_utils
+package optional
 
 // Optional represents a value that may or may not be present (Some or None).
 type Optional[T any] struct {
