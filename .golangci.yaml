@@ -1,0 +1,6 @@
+linters:
+  enable:
+    - exhaustruct
+    - staticcheck
+    - govet
+    - gofmt
