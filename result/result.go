@@ -1,6 +1,9 @@
 package result
 
-import go_utils "github.com/azat-dev/go-utils/optional"
+import (
+	"fmt"
+	go_utils "github.com/azat-dev/go-utils/optional"
+)
 
 // Result represents the outcome of an operation, which can either be a successful value (Ok) or an error (Err).
 // T - the type of the successful value.
@@ -20,6 +23,13 @@ func Ok[T any](v T) Result[T] {
 func Err[T any](e error) Result[T] {
 	var zero T // Zero value for type T
 	return Result[T]{value: zero, err: e}
+}
+
+// ErrorF creates a new Result with a formatted error and the zero value for the type.
+// It uses fmt.Errorf for formatting the error message.
+func ErrorF[T any](format string, a ...any) Result[T] {
+	var zero T // Zero value for type T
+	return Result[T]{value: zero, err: fmt.Errorf(format, a...)}
 }
 
 // IsOk returns true if the Result contains a successful value.
