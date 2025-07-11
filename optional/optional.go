@@ -54,33 +54,20 @@ func (o Optional[T]) UnwrapOr(defaultValue T) T {
 	return defaultValue
 }
 
-// MapOptional applies a function to the value inside the Optional, if it's present.
+// Map applies a function to the value inside the Optional, if it's present.
 // It returns a new Optional with the result. If the original Optional was None, it returns None.
-func MapOptional[T, U any](o Optional[T], f func(T) U) Optional[U] {
+func Map[T, U any](o Optional[T], f func(T) U) Optional[U] {
 	if o.present {
 		return Some(f(o.value))
 	}
 	return None[U]()
 }
 
-// FlatMapOptional (or AndThen) applies a function that itself returns an Optional.
+// FlatMap (or AndThen) applies a function that itself returns an Optional.
 // Use for chaining calls where each step might return an empty value.
-func FlatMapOptional[T, U any](o Optional[T], f func(T) Optional[U]) Optional[U] {
+func FlatMap[T, U any](o Optional[T], f func(T) Optional[U]) Optional[U] {
 	if o.present {
 		return f(o.value)
 	}
 	return None[U]()
-}
-
-// OptionalFromResult converts a Result into an Optional.
-// If the Result contains a successful value (IsOk), it returns a Some Optional with that value.
-// If the Result contains an error (IsErr), it returns a None Optional.
-func OptionalFromResult[T any](r Result[T]) Optional[T] {
-	if r.IsOk() {
-		// We use .Get() to extract the value when we are sure it's present (IsOk).
-		// In Go, it's idiomatic to return (value, error), so we just take the value.
-		val, _ := r.Get()
-		return Some(val)
-	}
-	return None[T]()
 }
