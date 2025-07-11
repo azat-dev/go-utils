@@ -144,9 +144,9 @@ func (r Result[T]) ToOptional() Optional[T] {
 	return None[T]()
 }
 
-// FromOptional преобразует Optional в Result.
+// ResultFromOptional преобразует Optional в Result.
 // Если Optional Some, Result будет Ok. Если Optional None, Result будет Err с указанной ошибкой.
-func FromOptional[T any](o Optional[T], errIfNone error) Result[T] {
+func ResultFromOptional[T any](o Optional[T], errIfNone error) Result[T] {
 	if o.IsSome() {
 		return Ok(o.Unwrap())
 	}
