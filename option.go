@@ -53,18 +53,18 @@ func (o Optional[T]) UnwrapOr(defaultValue T) T {
 	return defaultValue
 }
 
-// Map применяет функцию к значению внутри Optional, если оно есть.
+// MapOptional применяет функцию к значению внутри Optional, если оно есть.
 // Возвращает новый Optional с результатом. Если исходный Optional был None, возвращает None.
-func Map[T, U any](o Optional[T], f func(T) U) Optional[U] {
+func MapOptional[T, U any](o Optional[T], f func(T) U) Optional[U] {
 	if o.present {
 		return Some(f(o.value))
 	}
 	return None[U]()
 }
 
-// FlatMap (или AndThen) применяет функцию, которая сама возвращает Optional.
+// FlatMapOptional (или AndThen) применяет функцию, которая сама возвращает Optional.
 // Используется для цепочек вызовов, каждый из которых может вернуть пустое значение.
-func FlatMap[T, U any](o Optional[T], f func(T) Optional[U]) Optional[U] {
+func FlatMapOptional[T, U any](o Optional[T], f func(T) Optional[U]) Optional[U] {
 	if o.present {
 		return f(o.value)
 	}
