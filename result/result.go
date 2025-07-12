@@ -2,7 +2,7 @@ package result
 
 import (
 	"fmt"
-	go_utils "github.com/azat-dev/go-utils/optional"
+	"github.com/azat-dev/go-utils/optional"
 )
 
 // Result represents the outcome of an operation, which can either be a successful value (Ok) or an error (Err).
@@ -149,9 +149,9 @@ func (r Result[T]) OrElseDo(f func(error) Result[T]) Result[T] {
 
 // ToOptional converts a Result into an Optional.
 // If the Result is Ok, the Optional will be Some. If the Result is Err, the Optional will be None.
-func (r Result[T]) ToOptional() go_utils.Optional[T] {
+func (r Result[T]) ToOptional() optional.Optional[T] {
 	if r.IsOk() {
-		return go_utils.Some(r.value)
+		return optional.Some(r.value)
 	}
-	return go_utils.None[T]()
+	return optional.None[T]()
 }
