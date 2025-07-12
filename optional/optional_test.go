@@ -2,6 +2,8 @@ package optional
 
 import (
 	"testing"
+
+	go_utils "github.com/azat-dev/go-utils"
 )
 
 func TestSome(t *testing.T) {
@@ -329,54 +331,54 @@ func TestFlatMap(t *testing.T) {
 
 func TestIsNil(t *testing.T) {
 	t.Run("nil interface", func(t *testing.T) {
-		if !isNil(nil) {
+		if !go_utils.IsNil(nil) {
 			t.Error("Expected isNil to return true for nil interface")
 		}
 	})
 
 	t.Run("nil pointer", func(t *testing.T) {
 		var ptr *int
-		if !isNil(ptr) {
+		if !go_utils.IsNil(ptr) {
 			t.Error("Expected isNil to return true for nil pointer")
 		}
 	})
 
 	t.Run("nil slice", func(t *testing.T) {
 		var slice []int
-		if !isNil(slice) {
+		if !go_utils.IsNil(slice) {
 			t.Error("Expected isNil to return true for nil slice")
 		}
 	})
 
 	t.Run("nil map", func(t *testing.T) {
 		var m map[string]int
-		if !isNil(m) {
+		if !go_utils.IsNil(m) {
 			t.Error("Expected isNil to return true for nil map")
 		}
 	})
 
 	t.Run("nil function", func(t *testing.T) {
 		var fn func()
-		if !isNil(fn) {
+		if !go_utils.IsNil(fn) {
 			t.Error("Expected isNil to return true for nil function")
 		}
 	})
 
 	t.Run("nil channel", func(t *testing.T) {
 		var ch chan int
-		if !isNil(ch) {
+		if !go_utils.IsNil(ch) {
 			t.Error("Expected isNil to return true for nil channel")
 		}
 	})
 
 	t.Run("non-nil values", func(t *testing.T) {
-		if isNil("hello") {
+		if go_utils.IsNil("hello") {
 			t.Error("Expected isNil to return false for string")
 		}
-		if isNil(42) {
+		if go_utils.IsNil(42) {
 			t.Error("Expected isNil to return false for int")
 		}
-		if isNil(true) {
+		if go_utils.IsNil(true) {
 			t.Error("Expected isNil to return false for bool")
 		}
 	})
@@ -384,14 +386,14 @@ func TestIsNil(t *testing.T) {
 	t.Run("non-nil pointer", func(t *testing.T) {
 		value := 42
 		ptr := &value
-		if isNil(ptr) {
+		if go_utils.IsNil(ptr) {
 			t.Error("Expected isNil to return false for non-nil pointer")
 		}
 	})
 
 	t.Run("non-nil slice", func(t *testing.T) {
 		slice := []int{1, 2, 3}
-		if isNil(slice) {
+		if go_utils.IsNil(slice) {
 			t.Error("Expected isNil to return false for non-nil slice")
 		}
 	})

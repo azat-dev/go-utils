@@ -1,6 +1,6 @@
 package optional
 
-import "reflect"
+import go_utils "github.com/azat-dev/go-utils"
 
 // Optional represents a value that may or may not be present (Some or None).
 type Optional[T any] struct {
@@ -8,26 +8,11 @@ type Optional[T any] struct {
 	present bool
 }
 
-// isNil checks if a value is nil using reflection.
-// This handles interface types and pointer types that could be nil.
-func isNil(v any) bool {
-	if v == nil {
-		return true
-	}
-	rv := reflect.ValueOf(v)
-	switch rv.Kind() {
-	case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice:
-		return rv.IsNil()
-	default:
-		return false
-	}
-}
-
 // Some creates an Optional with a present value.
 // Panics if the value is nil (for interface and pointer types).
 func Some[T any](v T) Optional[T] {
 	// Use reflection to check if the value is nil
-	if isNil(v) {
+	if go_utils.IsNil(v) {
 		panic("Some() called with nil value")
 	}
 	return Optional[T]{value: v, present: true}

@@ -2,6 +2,9 @@ package result
 
 import (
 	"fmt"
+
+	go_utils "github.com/azat-dev/go-utils"
+
 	"github.com/azat-dev/go-utils/optional"
 )
 
@@ -13,8 +16,13 @@ type Result[T any] struct {
 }
 
 // Ok creates a Result with a successful value.
+// Panics if the value is nil (for interface and pointer types).
 // Use this to indicate a successful operation.
 func Ok[T any](v T) Result[T] {
+	// Use reflection to check if the value is nil
+	if go_utils.IsNil(v) {
+		panic("Ok() called with nil value")
+	}
 	return Result[T]{value: v, err: nil}
 }
 
