@@ -477,3 +477,25 @@ func TestNewFromNullable(t *testing.T) {
 		}
 	})
 }
+
+func TestNewFromNullablePointer(t *testing.T) {
+	t.Run("nil pointer", func(t *testing.T) {
+		var p *int
+		opt := NewFromNullablePointer(p)
+		if opt.IsSome() {
+			t.Error("Expected None for nil pointer")
+		}
+	})
+
+	t.Run("non-nil pointer", func(t *testing.T) {
+		val := 123
+		opt := NewFromNullablePointer(&val)
+		if opt.IsNone() {
+			t.Error("Expected Some for non-nil pointer")
+		}
+		v, ok := opt.Get()
+		if !ok || v != 123 {
+			t.Errorf("Expected 123, got %v", v)
+		}
+	})
+}

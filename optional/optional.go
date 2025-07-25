@@ -88,3 +88,13 @@ func NewFromNullable[T any](v T) Optional[T] {
 	}
 	return Some(v)
 }
+
+// NewFromNullablePointer creates an Optional from a pointer.
+// If the pointer is nil, it returns None.
+// Otherwise, it dereferences the pointer and returns Some(*ptr).
+func NewFromNullablePointer[T any](ptr *T) Optional[T] {
+	if ptr == nil {
+		return None[T]()
+	}
+	return Some(*ptr)
+}
