@@ -398,3 +398,82 @@ func TestIsNil(t *testing.T) {
 		}
 	})
 }
+
+func TestNewFromNullable(t *testing.T) {
+	t.Run("non-nil pointer", func(t *testing.T) {
+		val := 42
+		opt := NewFromNullable(&val)
+		if opt.IsNone() {
+			t.Error("Expected NewFromNullable to return Some for non-nil pointer")
+		}
+		ptr, ok := opt.Get()
+		if !ok {
+			t.Error("Expected Get to return true for non-nil pointer")
+		}
+		if *ptr != 42 {
+			t.Errorf("Expected 42, got %d", *ptr)
+		}
+	})
+
+	t.Run("nil pointer", func(t *testing.T) {
+		var ptr *int
+		opt := NewFromNullable(ptr)
+		if opt.IsSome() {
+			t.Error("Expected NewFromNullable to return None for nil pointer")
+		}
+	})
+
+	t.Run("nil interface", func(t *testing.T) {
+		var i any = nil
+		opt := NewFromNullable(i)
+		if opt.IsSome() {
+			t.Error("Expected NewFromNullable to return None for nil interface")
+		}
+	})
+
+	t.Run("non-nil interface", func(t *testing.T) {
+		var i any = "test"
+		opt := NewFromNullable(i)
+		if opt.IsNone() {
+			t.Error("Expected NewFromNullable to return Some for non-nil interface")
+		}
+		val, ok := opt.Get()
+		if !ok {
+			t.Error("Expected Get to return true for non-nil interface")
+		}
+		if val != "test" {
+			t.Errorf("Expected 'test', got '%v'", val)
+		}
+	})
+
+	t.Run("nil slice", func(t *testing.T) {
+		var s []int
+		opt := NewFromNullable(s)
+		if opt.IsSome() {
+			t.Error("Expected NewFromNullable to return None for nil slice")
+		}
+	})
+
+	t.Run("non-nil slice", func(t *testing.T) {
+		s := []int{1, 2, 3}
+		opt := NewFromNullable(s)
+		if opt.IsNone() {
+			t.Error("Expected NewFromNullable to return Some for non-nil slice")
+		}
+		val, ok := opt.Get()
+		if !ok || len(val) != 3 {
+			t.Error("Expected Get to return valid slice")
+		}
+	})
+
+	t.Run("non-pointer struct", func(t *testing.T) {
+		type Person struct {
+			Name string
+		}
+		p := Person{Name: "Alice"}
+		opt := NewFromNullable(p)
+		if opt.IsNone() {
+			t.Error("Expected NewFromNullable to return Some for non-pointer struct")
+		}
+	})
+}

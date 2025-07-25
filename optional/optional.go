@@ -78,3 +78,13 @@ func FlatMap[T, U any](o Optional[T], f func(T) Optional[U]) Optional[U] {
 	}
 	return None[U]()
 }
+
+// NewFromNullable creates an Optional from a nullable value.
+// If the value is nil (for pointer or interface types), it returns None.
+// Otherwise, it returns Some.
+func NewFromNullable[T any](v T) Optional[T] {
+	if go_utils.IsNil(v) {
+		return None[T]()
+	}
+	return Some(v)
+}
