@@ -15,13 +15,19 @@ func Some[T any](v T) Optional[T] {
 	if go_utils.IsNil(v) {
 		panic("Some() called with nil value")
 	}
-	return Optional[T]{value: v, present: true}
+	return Optional[T]{
+		value:   v,
+		present: true,
+	}
 }
 
 // None creates an empty Optional for the specified type.
 func None[T any]() Optional[T] {
 	var zero T
-	return Optional[T]{present: false, value: zero}
+	return Optional[T]{
+		present: false,
+		value:   zero,
+	}
 }
 
 // IsSome returns true if the value is present.
@@ -36,7 +42,10 @@ func (o Optional[T]) IsNone() bool {
 
 // Get returns the value and true if it's present. Otherwise, it returns the zero-value and false.
 // This is the idiomatic Go way to work with optional values.
-func (o Optional[T]) Get() (T, bool) {
+func (o Optional[T]) Get() (
+	T,
+	bool,
+) {
 	if o.present {
 		return o.value, true
 	}
@@ -63,7 +72,10 @@ func (o Optional[T]) UnwrapOr(defaultValue T) T {
 
 // Map applies a function to the value inside the Optional, if it's present.
 // It returns a new Optional with the result. If the original Optional was None, it returns None.
-func Map[T, U any](o Optional[T], f func(T) U) Optional[U] {
+func Map[T, U any](
+	o Optional[T],
+	f func(T) U,
+) Optional[U] {
 	if o.present {
 		return Some(f(o.value))
 	}
@@ -72,7 +84,10 @@ func Map[T, U any](o Optional[T], f func(T) U) Optional[U] {
 
 // FlatMap (or AndThen) applies a function that itself returns an Optional.
 // Use for chaining calls where each step might return an empty value.
-func FlatMap[T, U any](o Optional[T], f func(T) Optional[U]) Optional[U] {
+func FlatMap[T, U any](
+	o Optional[T],
+	f func(T) Optional[U],
+) Optional[U] {
 	if o.present {
 		return f(o.value)
 	}
@@ -97,4 +112,20 @@ func NewFromNullablePointer[T any](ptr *T) Optional[T] {
 		return None[T]()
 	}
 	return Some(*ptr)
+}
+
+func Equal[T any](
+	a, b Optional[T],
+	eq func(
+		T,
+		T,
+	) bool,
+) bool {
+	if a.present != b.present {
+		return false
+	}
+	if !a.present {
+		return true // оба None
+	}
+	return eq(a.value, b.value)
 }
