@@ -137,5 +137,5 @@ func NotEqual[T any](
 		T,
 	) bool,
 ) bool {
-	return Equal(a, b, eq)
+	return !Equal(a, b, eq)
 }
