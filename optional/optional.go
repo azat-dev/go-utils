@@ -129,3 +129,13 @@ func Equal[T any](
 	}
 	return eq(a.value, b.value)
 }
+
+func NotEqual[T any](
+	a, b Optional[T],
+	eq func(
+		T,
+		T,
+	) bool,
+) bool {
+	return Equal(a, b, eq)
+}
