@@ -604,44 +604,53 @@ func TestNewFromNullablePointer(t *testing.T) {
 }
 
 func TestOptionalEquality_Primitives(t *testing.T) {
-	type testCase[T comparable] struct {
+	type testCase[T any] struct {
 		name     string
 		a, b     Optional[T]
 		expected bool
+		eq       func(
+			T,
+			T,
+		) bool
 	}
 
 	intTests := []testCase[int]{
 		{
-			"Equal Some(42)",
-			Some(42),
-			Some(42),
-			true,
+			name:     "Equal Some(42)",
+			a:        Some(42),
+			b:        Some(42),
+			expected: true,
+			eq:       func(x, y int) bool { return x == y },
 		},
 		{
-			"Different Some(42) vs Some(100)",
-			Some(42),
-			Some(100),
-			false,
+			name:     "Different Some(42) vs Some(100)",
+			a:        Some(42),
+			b:        Some(100),
+			expected: false,
+			eq:       func(x, y int) bool { return x == y },
 		},
 		{
-			"Some vs None",
-			Some(42),
-			None[int](),
-			false,
+			name:     "Some vs None",
+			a:        Some(42),
+			b:        None[int](),
+			expected: false,
+			eq:       func(x, y int) bool { return x == y },
 		},
 		{
-			"None vs None",
-			None[int](),
-			None[int](),
-			true,
+			name:     "None vs None",
+			a:        None[int](),
+			b:        None[int](),
+			expected: true,
+			eq:       func(x, y int) bool { return x == y },
 		},
 	}
 
 	for _, tt := range intTests {
 		t.Run(
 			"int/"+tt.name, func(t *testing.T) {
-				if (tt.a == tt.b) != tt.expected {
-					t.Errorf("expected %v == %v to be %v", tt.a, tt.b, tt.expected)
+				result := Equal(tt.a, tt.b, tt.eq)
+				if result != tt.expected {
+					t.Errorf("Equal(%v, %v) = %v; want %v", tt.a, tt.b, result, tt.expected)
 				}
 			},
 		)
@@ -649,24 +658,27 @@ func TestOptionalEquality_Primitives(t *testing.T) {
 
 	stringTests := []testCase[string]{
 		{
-			"Equal Some(\"hello\")",
-			Some("hello"),
-			Some("hello"),
-			true,
+			name:     "Equal Some(\"hello\")",
+			a:        Some("hello"),
+			b:        Some("hello"),
+			expected: true,
+			eq:       func(x, y string) bool { return x == y },
 		},
 		{
-			"Different Some(\"hello\") vs Some(\"world\")",
-			Some("hello"),
-			Some("world"),
-			false,
+			name:     "Different Some(\"hello\") vs Some(\"world\")",
+			a:        Some("hello"),
+			b:        Some("world"),
+			expected: false,
+			eq:       func(x, y string) bool { return x == y },
 		},
 	}
 
 	for _, tt := range stringTests {
 		t.Run(
 			"string/"+tt.name, func(t *testing.T) {
-				if (tt.a == tt.b) != tt.expected {
-					t.Errorf("expected %v == %v to be %v", tt.a, tt.b, tt.expected)
+				result := Equal(tt.a, tt.b, tt.eq)
+				if result != tt.expected {
+					t.Errorf("Equal(%v, %v) = %v; want %v", tt.a, tt.b, result, tt.expected)
 				}
 			},
 		)
@@ -677,6 +689,10 @@ func TestOptionalEquality_Struct(t *testing.T) {
 	type Person struct {
 		Name string
 		Age  int
+	}
+
+	eq := func(x, y Person) bool {
+		return x.Name == y.Name && x.Age == y.Age
 	}
 
 	tests := []struct {
@@ -737,9 +753,10 @@ func TestOptionalEquality_Struct(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(
-			tt.name, func(t *testing.T) {
-				if (tt.a == tt.b) != tt.expected {
-					t.Errorf("expected %v == %v to be %v", tt.a, tt.b, tt.expected)
+			"struct/"+tt.name, func(t *testing.T) {
+				result := Equal(tt.a, tt.b, eq)
+				if result != tt.expected {
+					t.Errorf("Equal(%v, %v) = %v; want %v", tt.a, tt.b, result, tt.expected)
 				}
 			},
 		)
